@@ -93,9 +93,6 @@ class Cronometro extends React.Component {
 }
 
 class Actividad extends React.Component {
-    constructor(props) {
-        super(props);
-    }
     render() {
         console.log(this.props);
         if (this.props.opcionMultiple) {
@@ -111,9 +108,6 @@ class Actividad extends React.Component {
 }
 
 class OpcionMultiple extends React.Component {
-    constructor(props) {
-        super(props);
-    }
     render() {
         const soluciones = this.props.soluciones.map(function (item, index) {
             return (<Opcion key={index}
@@ -192,7 +186,7 @@ class Estatus extends React.Component {
                 <div className="vidas">
                     <ul>
                         {this.props.vidas.map(function (item, index) {
-                            return (<Vida activa={item} />)
+                            return (<Vida key={index} activa={item} />)
                         })}
                     </ul>
                 </div>
@@ -228,6 +222,7 @@ class Reto extends React.Component {
     }
 
     componentDidMount() {
+        console.log("entra");
         axios.get("http://localhost:9021/saai/reto?topicoAlgebra=1&tipoReto=1")
             .then(res => {
                 console.log(res.data);
@@ -241,13 +236,13 @@ class Reto extends React.Component {
     }
 
     acertarRespuesta() {
-        var altura, seguidas;
+        var altura;
         switch (this.state.racha) {
             case 1: altura = 33; break;
             case 2: altura = 20; break;
             case 3: altura = 10; break;
         }
-        if (this.state.seguidas + 1 == 3 && this.state.racha == 1) {
+        if (this.state.seguidas + 1 === 3 && this.state.racha === 1) {
             this.setState(function (prevState, props) {
                 return {
                     puntaje: prevState.puntaje + (50 * 1),
@@ -256,7 +251,7 @@ class Reto extends React.Component {
                     seguidas: prevState.seguidas + 1
                 };
             });
-        } else if (this.state.seguidas + 1 == 8 && this.state.racha == 2) {
+        } else if (this.state.seguidas + 1 === 8 && this.state.racha === 2) {
             this.setState(function (prevState, props) {
                 return {
                     puntaje: prevState.puntaje + (50 * 2),
@@ -265,7 +260,7 @@ class Reto extends React.Component {
                     seguidas: prevState.seguidas + 1
                 };
             });
-        } else if (this.state.seguidas + 1 == 18 && this.state.racha == 3) {
+        } else if (this.state.seguidas + 1 === 18 && this.state.racha === 3) {
             this.setState(function (prevState, props) {
                 return {
                     puntaje: prevState.puntaje + (50 * 3),
@@ -274,7 +269,7 @@ class Reto extends React.Component {
                     seguidas: prevState.seguidas + 1
                 };
             });
-        } else if (this.state.racha == 4) {
+        } else if (this.state.racha === 4) {
             this.setState(function (prevState, props) {
                 return {
                     puntaje: prevState.puntaje + (50 * 4),
