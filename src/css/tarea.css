@@ -10,7 +10,7 @@ and open the template in the editor.
 
 main{
     display: grid;
-    height: 100vh;
+    height: 65vh;
     grid-gap: 10px;
     grid-template-columns: 3fr 1fr;
     grid-template-rows: 1fr 2fr 8fr;
@@ -18,7 +18,6 @@ main{
 }
 
 main > *{
-    background-color: goldenrod;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -121,7 +120,7 @@ main > *{
     align-items: flex-end;
 }
 
-.barra{
+.barra-racha{
     grid-row: 2/3;
     border: 2px solid #32cdff;
     background: #e6f9ff;
@@ -130,12 +129,12 @@ main > *{
     margin: 0 auto;
 }
 
-.barra-progreso{
+.barra-racha-progreso{
     height: 30%;
     width: 100%;
     background: #e6f9ff;
     background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
-    transition: 0.4s linear;
+    transition: all .5s ease-in-out;
     transition-property: height, background-color;
     box-shadow: inset 0 0 25px #32cdff;
 }
@@ -182,7 +181,7 @@ main > *{
     justify-content: normal;
     align-items: normal;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 6fr 1fr;
+    height: 100%;
 }
 
 .contenedor-reto > *{
@@ -193,7 +192,6 @@ main > *{
 }
 
 .actividad{
-    grid-row: 2/3;
     margin: 40px 20px;
     border: 1px solid #32cdff;
     background: #fff;
@@ -207,7 +205,6 @@ main > *{
 }
 
 .contenedor-solucion{
-    grid-row: 2/3;
     background: #fff;
     display: grid;
     grid-gap: 10px;
@@ -264,3 +261,57 @@ main > *{
     box-shadow: 0px 0px 20px #32cdff;
 }
 /*Fin contenedor actividad*/
+
+/*Popup*/
+.popup{
+    position: absolute;
+    transition: all .2s ease-in-out;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    text-align: center;
+    z-index: 2;
+    top: 0;
+}
+
+.popup span{
+    font-size: 300px;
+    color: #32cdff;
+}
+/*Fin popup*/
+
+/*Card*/
+
+.cardBox{
+    margin: 15px;
+}
+
+.card{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    transform-style: preserve-3d;
+    transition: .5s ease;
+}
+
+.card-front, .card-back{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    backface-visibility: hidden;
+}
+
+.cardBox:hover .card{
+    transform: rotateX(0);
+}
+
+.card-back{
+    transform: rotateX(180deg);
+    background: #fff;
+}
+
+/*Card*/
