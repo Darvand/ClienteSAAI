@@ -14,7 +14,7 @@ const leftPad = (width, n) => {
 class Popup extends React.Component {
     constructor() {
         super();
-        this.state = { seconds: 3 , isRunning: 0};
+        this.state = { seconds: 3, isRunning: 0 };
         this.timer = 0;
         this.startTimer = this.startTimer.bind(this);
         this.countDown = this.countDown.bind(this);
@@ -24,12 +24,12 @@ class Popup extends React.Component {
         if (this.timer == 0) {
             this.timer = setInterval(this.countDown, 1000);
         }
-        this.setState({isRunning: 1, seconds: 3});
+        this.setState({ isRunning: 1, seconds: 3 });
     }
-    reset(){
-        setTimeout(()=>{ 
-            this.setState({isRunning: 0});
-        },3000);
+    reset() {
+        setTimeout(() => {
+            this.setState({ isRunning: 0 });
+        }, 3000);
     }
 
     countDown() {
@@ -37,20 +37,20 @@ class Popup extends React.Component {
         // Remove one second, set state so a re-render happens.
         let seconds = this.state.seconds - 1;
         //audio.play();
-        this.setState({seconds});
+        this.setState({ seconds });
 
         // Check if we're at zero.
         if (seconds == 0) {
             this.props.toggleTime();
-            setTimeout(()=>{this.setState({isRunning: 2})}, 400);
+            setTimeout(() => { this.setState({ isRunning: 2 }) }, 400);
         }
     }
     render() {
         var style = {
-            popup:{
+            popup: {
                 width: this.props.running ? "0%" : "100%",
                 opacity: this.props.running ? "0.01" : "1"
-            },div:{
+            }, div: {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -61,8 +61,8 @@ class Popup extends React.Component {
             <div className="popup" style={style.popup}>
                 {
                     this.state.isRunning == 0 ? <button style={{ margin: "0 auto" }} onClick={this.startTimer}>Comenzar</button>
-                    :this.state.isRunning == 1 ? <div style={style.div}> <span>{this.state.seconds}</span> </div>
-                    :<div style={style.div}> <span style={{fontSize: "100px"}}>Vuelve a intentarlo</span> </div>
+                        : this.state.isRunning == 1 ? <div style={style.div}> <span>{this.state.seconds}</span> </div>
+                            : <div style={style.div}> <span style={{ fontSize: "100px" }}>Vuelve a intentarlo</span> </div>
                 }
             </div>
         )
@@ -98,7 +98,7 @@ class TimeElapsed extends React.Component {
             <div id={this.props.id}>
                 <span>{leftPad(2, units.min)}:</span>
                 <span>{leftPad(2, units.sec)}.</span>
-                <span style={{fontSize: "25px"}}>{units.msec}</span>
+                <span style={{ fontSize: "25px" }}>{units.msec}</span>
             </div>
         );
     }
@@ -144,49 +144,47 @@ class Cronometro extends React.Component {
 }
 
 class Actividad extends React.Component {
-    reset(){
+    reset() {
         this.child.reset();
     }
     render() {
-        return(
+        var contenido;
+        switch (this.props.tipoReto) {
+            case 1:
+            case 2:  contenido = <OpcionMultiple
+                actividad={this.props.actividad}
+                acertarRespuesta={this.props.acertarRespuesta}
+                errarRespuesta={this.props.errarRespuesta}
+                tipoReto={this.props.tipoReto}
+                ref={instance => { this.child = instance; }} />
+                break;
+            default: contenido = <div>ERRO!</div>
+        }
+        return (
             <div className="cardBox">
-                <div className="card" style={{transform: !this.props.isChanging?"rotateX(0)":"rotateX(180deg)"}}>
+                <div className="card" style={{ transform: !this.props.isChanging ? "rotateX(0)" : "rotateX(180deg)" }}>
                     <div className="card-front">
-                        <OpcionMultiple
-                            actividad={this.props.actividad}
-                            acertarRespuesta={this.props.acertarRespuesta}
-                            errarRespuesta={this.props.errarRespuesta}
-                            ref={instance => { this.child = instance; }}
-                        />
+                        {contenido}
                     </div>
                     <div className="card-back"></div>
                 </div>
             </div>
         )
-        /*if (this.props.opcionMultiple) {
-            return (
-                <OpcionMultiple
-                    actividad={this.props.actividad}
-                    soluciones={this.props.soluciones}
-                    acertarRespuesta={this.props.acertarRespuesta}
-                    errarRespuesta={this.props.errarRespuesta}
-                />)
-        }*/
     }
 }
 
 class OpcionMultiple extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state = {isChanging: false};
+        this.state = { isChanging: false };
         this.cambiarReto = this.cambiarReto.bind(this);
     }
-    cambiarReto(){
-        this.setState({cambiarReto: true});
+    cambiarReto() {
+        this.setState({ cambiarReto: true });
     }
-    reset(){
-        for(let i=0;i<this.props.actividad.soluciones.length;i++){
-            this["child"+i].resetOpcion();
+    reset() {
+        for (let i = 0; i < this.props.actividad.soluciones.length; i++) {
+            this["child" + i].resetOpcion();
         }
     }
     render() {
@@ -195,11 +193,12 @@ class OpcionMultiple extends React.Component {
                 solucion={item.solucion}
                 correcta={item.correcta}
                 acertarRespuesta={this.props.acertarRespuesta}
-                errarRespuesta={this.props.errarRespuesta} 
+                errarRespuesta={this.props.errarRespuesta}
                 cambiarReto={this.cambiarReto}
-                ref={instance => { this["child"+index] = instance; }}/>)
+                tipoReto={this.props.tipoReto}
+                ref={instance => { this["child" + index] = instance; }} />)
         }, this)
-        var style = {opacity: this.state.isChanging ? "0":"1"}
+        var style = { opacity: this.state.isChanging ? "0" : "1" }
         return (
             <div className="contenedor-reto" style={style}>
                 <div className="actividad">
@@ -230,18 +229,27 @@ class Opcion extends React.Component {
     handleClick() {
         if (this.props.correcta) {
             this.props.acertarRespuesta(60);
-            this.setState({ color: "#32cdff"})
-            
+            this.setState({ color: "#32cdff" })
+
         } else {
             this.props.errarRespuesta();
             this.setState({ color: "#555" })
         }
     }
-    resetOpcion(){
-        this.setState({ color: "#fff"});
+    resetOpcion() {
+        this.setState({ color: "#fff" });
     }
     render() {
-        return (<div style = { { background: this.state.color } } onClick = { this.handleClick }>{ this.props.solucion }</div>)
+        if(this.props.tipoReto == 1){
+            return (<div style={{ background: this.state.color }} onClick={this.handleClick}>{this.props.solucion}</div>)
+        }else{
+            return (<div style={{ background: this.state.color }} onClick={this.handleClick}>
+                <MathJax.Context input='ascii'>
+                    <MathJax.Node inline>{this.props.solucion}</MathJax.Node>
+                </MathJax.Context>
+                </div>)
+        }
+        
     }
 }
 
@@ -298,15 +306,18 @@ class Reto extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = this.initialState = {
             puntaje: 0,
             altura: 0,
             seguidas: 0,
             racha: 1,
             vidas: [true, true, true, true],
             running: false,
-            actividad:{ actividad: "", soluciones: ["", "", "", ""], enunciado: ""},
-            isChanging: false
+            actividad: { actividad: "", soluciones: ["", "", "", ""], enunciado: "" },
+            isChanging: false,
+            acertadas: 0,
+            erradas: 0,
+            tiporeto: 1
         };
         this.acertarRespuesta = this.acertarRespuesta.bind(this);
         this.errarRespuesta = this.errarRespuesta.bind(this);
@@ -315,7 +326,7 @@ class Reto extends React.Component {
     }
 
     getActividad() {
-        axios.get("http://localhost:9021/saai/reto?topicoAlgebra=1&tipoReto=1")
+        axios.get("http://localhost:9021/saai/reto?topicoAlgebra=1&tipoReto=" + this.state.tiporeto)
             .then(res => {
                 this.setState({
                     actividad: res.data
@@ -373,6 +384,11 @@ class Reto extends React.Component {
                 };
             });
         }
+        this.setState({ acertadas: this.state.acertadas + 1 }, () => {
+            if (this.state.acertadas == 3 && this.state.tiporeto == 1) {
+                this.setState({ tiporeto: 2 });
+            }
+        })
         setTimeout(this.siguienteReto, 400)
     }
 
@@ -385,7 +401,7 @@ class Reto extends React.Component {
                 break;
             }
         }
-        if(i == 4){
+        if (i == 4) {
             this.popup.reset();
             this.cronometro.reset();
             this.child.reset();
@@ -394,27 +410,29 @@ class Reto extends React.Component {
                 vidas: [true, true, true, true],
                 racha: 1,
                 altura: 0,
-                seguidas: 0
+                seguidas: 0,
+                acertadas: 0
             })
             setTimeout(this.siguienteReto, 400);
-        }else{
+        } else {
             this.setState({
                 racha: 1,
                 altura: 0,
                 seguidas: 0,
-                vidas: vidasCopy
+                vidas: vidasCopy,
+                erradas: this.state.erradas + 1
             });
             setTimeout(this.siguienteReto, 400);
         }
-        
+
     }
 
-    siguienteReto(){
-        this.setState({isChanging: true}, () =>{
+    siguienteReto() {
+        this.setState({ isChanging: true }, () => {
             setTimeout(() => {
                 this.getActividad();
                 this.child.reset();
-                this.setState({isChanging: false});
+                this.setState({ isChanging: false });
             }, 400)
         })
     }
@@ -428,15 +446,15 @@ class Reto extends React.Component {
     render() {
         return (
             <div style={{ position: "relative" }}>
-                <Popup running={this.state.running} toggleTime={this.toggleTime} ref={instance => { this.popup = instance; }}/>
+                <Popup running={this.state.running} toggleTime={this.toggleTime} ref={instance => { this.popup = instance; }} />
                 <main>
                     <Cronometro running={this.state.running} ref={instance => { this.cronometro = instance; }} />
                     <Enunciado enunciado={this.state.actividad.enunciado} />
-                    <Actividad opcionMultiple={true}
-                        actividad={this.state.actividad}
+                    <Actividad actividad={this.state.actividad}
                         acertarRespuesta={this.acertarRespuesta}
                         errarRespuesta={this.errarRespuesta}
                         isChanging={this.state.isChanging}
+                        tipoReto={this.state.tiporeto}
                         ref={instance => { this.child = instance; }} />
                     <Estatus puntaje={this.state.puntaje}
                         altura={this.state.altura}
