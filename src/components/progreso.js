@@ -14,7 +14,7 @@ class Progreso extends React.Component {
                     <li>
                         <a className="boton active">
                             <i className="fa fa-cubes"></i>
-                            <p>Aritmetica</p>
+                            <p>Aritmética</p>
                         </a>
                     </li>
 

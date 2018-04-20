@@ -47,6 +47,7 @@ main > *{
     border: 1px solid #32cdff;
     box-shadow: 0px 0px 10px #32cdff;
     margin: 0 20px;
+    padding: 0 10px;
 }
 
 /*Fin contenedor puntaje*/
@@ -214,8 +215,56 @@ main > *{
     grid-template-rows: 1fr 6fr 1fr;
 }
 
+.contenedor-editor{
+    color: #555;
+    background: #fff;
+    display: block;
+    overflow: auto;
+    text-align: center;
+}
+
+.contenedor-reto .row{
+    padding: 10px;
+    margin: 0;
+    border-bottom: 1px solid #32cdff;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    /* margin: 0; */
+    justify-content: center;
+}
+
+.row .paso{
+    padding-right: 20px;
+    width: 102px;
+}
+
+.row .material-icons{
+    font-size: 20px;
+    margin: 0;    
+}
+
+.contenedor-reto input{
+    width: 100%;
+    display: block;
+    padding: 12px 0px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 3px solid #32cdff;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+}
+
+.contenedor-reto input:focus {
+    border: 3px solid #555;
+}
+
+.contenedor-reto button{
+    margin: 10px;
+}
+
 .contenedor-solucion > *{
-    background-color: rosybrown;
     display: flex;
     justify-content: center;
     align-items: center;

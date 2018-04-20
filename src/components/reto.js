@@ -1,6 +1,7 @@
 import React from 'react';
 import '../css/tarea.css';
 import axios from 'axios';
+import imagen from '../img/explicacion.png';
 import MathJax from 'react-mathjax2';
 
 const leftPad = (width, n) => {
@@ -57,10 +58,16 @@ class Popup extends React.Component {
                 height: "100%"
             }
         }
+        const inicio = <div style={{ height: "100%" }}>
+            <button style={{ margin: "0 auto" }} onClick={this.startTimer}>Comenzar</button>
+            <div style={{ overflow: "auto", height: "92%" }}>
+                <img src={imagen} style={{ width: "80%" }} />
+            </div>
+        </div>
         return (
             <div className="popup" style={style.popup}>
                 {
-                    this.state.isRunning == 0 ? <button style={{ margin: "0 auto" }} onClick={this.startTimer}>Comenzar</button>
+                    this.state.isRunning == 0 ? inicio
                         : this.state.isRunning == 1 ? <div style={style.div}> <span>{this.state.seconds}</span> </div>
                             : <div style={style.div}> <span style={{ fontSize: "100px" }}>Vuelve a intentarlo</span> </div>
                 }
@@ -151,11 +158,16 @@ class Actividad extends React.Component {
         var contenido;
         switch (this.props.tipoReto) {
             case 1:
-            case 2:  contenido = <OpcionMultiple
+            case 2: contenido = <OpcionMultiple
                 actividad={this.props.actividad}
                 acertarRespuesta={this.props.acertarRespuesta}
                 errarRespuesta={this.props.errarRespuesta}
                 tipoReto={this.props.tipoReto}
+                ref={instance => { this.child = instance; }} />
+                break;
+            case 3: contenido = <Editor actividad={this.props.actividad}
+                acertarRespuesta={this.props.acertarRespuesta}
+                errarRespuesta={this.props.errarRespuesta}
                 ref={instance => { this.child = instance; }} />
                 break;
             default: contenido = <div>ERRO!</div>
@@ -167,6 +179,91 @@ class Actividad extends React.Component {
                         {contenido}
                     </div>
                     <div className="card-back"></div>
+                </div>
+            </div>
+        )
+    }
+}
+
+class Editor extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            actual: "",
+            steps: [],
+            value: ""
+        }
+        this.handleChange = this.handleChange.bind(this)
+        this.onDone = this.onDone.bind(this)
+        this.onSimplified = this.onSimplified.bind(this)
+    }
+    handleChange(event) {
+        this.setState({ value: event.target.value })
+    }
+    onDone(event) {
+        if (this.state.value != "") {
+            var stepsCopy = this.state.steps.slice();
+            stepsCopy.push(this.state.value)
+            this.setState({ steps: stepsCopy, value: "", actual: this.state.value })
+        }
+    }
+    onSimplified() {
+        if (this.props.actividad.soluciones[0].solucion == this.state.actual) {
+            this.props.acertarRespuesta(50);
+        } else {
+            this.props.errarRespuesta();
+        }
+    }
+    reset() {
+        this.setState({ actual: "", steps: [], value: "" })
+    }
+    render() {
+        var style = { opacity: this.state.isChanging ? "0" : "1" }
+        const steps = this.state.steps.map(function (item, index) {
+            return (<Row key={index} index={index + 1} value={item} />)
+        })
+        return (
+            <div className="contenedor-reto" style={style}>
+                <div className="actividad">
+                    <MathJax.Context input='ascii'>
+                        <MathJax.Node inline>{this.props.actividad.actividad}</MathJax.Node>
+                    </MathJax.Context>
+                </div>
+                <div className="contenedor-editor">
+                    <div className="row">
+                        <input onChange={this.handleChange}
+                            name={this.state.name}
+                            value={this.state.value} />
+                        <button onClick={this.onDone}><i class="material-icons">done</i></button>
+                    </div>
+                    <div className="row">
+                        <div className="paso">{"Visualizar"}</div>
+                        <div style={{ width: "100%" }}>
+                            <MathJax.Context input='ascii'>
+                                <MathJax.Node inline>{this.state.value}</MathJax.Node>
+                            </MathJax.Context>
+                        </div>
+                    </div>
+                    {steps}
+                    <button onClick={this.onSimplified}>Simplificado</button>
+                </div>
+            </div>
+        )
+    }
+}
+
+class Row extends React.Component {
+    render() {
+        var style = {
+            width: "100%"
+        }
+        return (
+            <div className="row">
+                <div className="paso">{"Paso " + this.props.index}</div>
+                <div style={style}>
+                    <MathJax.Context input='ascii'>
+                        <MathJax.Node inline>{this.props.value}</MathJax.Node>
+                    </MathJax.Context>
                 </div>
             </div>
         )
@@ -240,16 +337,16 @@ class Opcion extends React.Component {
         this.setState({ color: "#fff" });
     }
     render() {
-        if(this.props.tipoReto == 1){
+        if (this.props.tipoReto == 1) {
             return (<div style={{ background: this.state.color }} onClick={this.handleClick}>{this.props.solucion}</div>)
-        }else{
+        } else {
             return (<div style={{ background: this.state.color }} onClick={this.handleClick}>
                 <MathJax.Context input='ascii'>
                     <MathJax.Node inline>{this.props.solucion}</MathJax.Node>
                 </MathJax.Context>
-                </div>)
+            </div>)
         }
-        
+
     }
 }
 
@@ -385,9 +482,13 @@ class Reto extends React.Component {
             });
         }
         this.setState({ acertadas: this.state.acertadas + 1 }, () => {
-            if (this.state.acertadas == 3 && this.state.tiporeto == 1) {
-                this.setState({ tiporeto: 2 });
-            }
+            setTimeout(() => {
+                if (this.state.acertadas == 3 && this.state.tiporeto == 1) {
+                    this.setState({ tiporeto: 2 });
+                } else if (this.state.acertadas == 6 && this.state.tiporeto == 2) {
+                    this.setState({ tiporeto: 3 });
+                }
+            },600)
         })
         setTimeout(this.siguienteReto, 400)
     }
@@ -405,14 +506,7 @@ class Reto extends React.Component {
             this.popup.reset();
             this.cronometro.reset();
             this.child.reset();
-            this.setState({
-                running: false,
-                vidas: [true, true, true, true],
-                racha: 1,
-                altura: 0,
-                seguidas: 0,
-                acertadas: 0
-            })
+            this.setState(this.initialState)
             setTimeout(this.siguienteReto, 400);
         } else {
             this.setState({
@@ -428,6 +522,7 @@ class Reto extends React.Component {
     }
 
     siguienteReto() {
+
         this.setState({ isChanging: true }, () => {
             setTimeout(() => {
                 this.getActividad();

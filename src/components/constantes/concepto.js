@@ -3,21 +3,22 @@ import React, { Component } from 'react';
 var Aritmetica =
     <div>
         <div className="contenedor-parrafo">
-            <p>Para realizar la correcta solución de una operación matematica,
-                            es necesario aplicar el orden de las operaciones.</p>
+            <p>Para realizar la correcta solución de una operación matemática, 
+                es necesario aplicar el orden de las operaciones.
+                Primero se resuelve primero, la prioridad más baja.</p>
         </div>
         <h5 style={{ fontWeight: "bold", textAlign: "center" }}>Jerarquía de las operaciones</h5>
         <table>
             <tr>
                 <th style={{ width: "20px" }}>Prioridad</th>
                 <th>Operación</th>
-                <th>Simbolo</th>
+                <th>Símbolo</th>
                 <th>Ejemplo</th>
                 <th>Resultado</th>
             </tr>
             <tr>
                 <td>1</td>
-                <td>Parentesís</td>
+                <td>Paréntesis</td>
                 <td>`()`</td>
                 <td>`4*(5+2)`</td>
                 <td>`4*7`</td>
